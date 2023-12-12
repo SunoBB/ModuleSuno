@@ -1,6 +1,9 @@
 ﻿
+using System.ComponentModel;
 using System.Diagnostics;
+using OfficeOpenXml;
 
+// EPPLUS 
 public class Item
 {
     public int STT { get; set; }
@@ -25,7 +28,7 @@ public class Item
     {
         // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
 
-        Console.WriteLine("Updating");
+        // Console.WriteLine("Updating");
 
         Item findItemEdit = itemList.FirstOrDefault(item => itemId == item.ItemID);
 
@@ -78,8 +81,84 @@ public class Item
         }
         
     }
+
+    // public static void ShowItem(List<Item> itemList, string itemName)
 }
-class Program
+
+public class Program
+{
+    static void Main()
+    {
+        // Add, Search, Del, Edit, Exit
+        List<Item> itemList = new List<Item>();
+        int choice;
+
+        do
+        {
+
+            Console.WriteLine("1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5.Exit");
+
+            do
+            {
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 5)
+                {
+                    break;
+                } 
+                else
+                {
+                    Console.WriteLine("ReChoice!");
+                }
+            } while (true);
+
+            if (choice == 5)
+            {
+                break;
+            } 
+            else if (choice == 1) // ADD
+            {
+                
+
+                Item.AddItem(itemList, new Item
+                {
+                    // STT = 1,
+                    ItemID = "01005",
+                    ItemName = "Laptop",
+                    Description = "Powerful laptop",
+                    Price = 1200.50m,
+                    Quantity = 10,
+                    DateAdded = DateTime.Now,
+                    Supplier = "ABC Electronics"
+                });
+
+            }
+            else if (choice == 2) // Search
+            {
+                Item.SearchItem(itemList, "itemName");
+            }
+            else if (choice == 3) // Remove
+            {
+                Item.RemoveItem(itemList, "ItemID");
+            }
+            else if (choice == 4) // Edit
+            {
+                Item updatedItem = new Item
+                {
+                    ItemName = "",
+                    Description = "",
+                    Price = 0.1m,
+                    Quantity = 10,
+                    DateAdded = DateTime.Now,
+                    Supplier = ""
+
+                };
+                Item.EditItem(itemList, "iemID", updatedItem);
+            }
+        } while (true);
+    }
+}
+
+
+/*class Program
 {
     static void Main()
     {
@@ -117,4 +196,4 @@ class Program
         };
         Item.EditItem(itemList, "itemID", updatedItem);
     }
-}
+}*/
