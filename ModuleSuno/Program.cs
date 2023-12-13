@@ -82,7 +82,14 @@ public class Item
         
     }
 
-    // public static void ShowItem(List<Item> itemList, string itemName)
+    public static void ShowItem(List<Item> itemList)
+    {
+        foreach (Item item in itemList)
+        {
+            // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
+            Console.WriteLine($" {item.ItemID} {item.ItemName}");
+        }
+    }
 }
 
 public class Program
@@ -95,12 +102,11 @@ public class Program
 
         do
         {
-
-            Console.WriteLine("1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5.Exit");
+            Console.WriteLine("0. Exit \n1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5.Show ");
 
             do
             {
-                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 5)
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= 5)
                 {
                     break;
                 } 
@@ -110,14 +116,12 @@ public class Program
                 }
             } while (true);
 
-            if (choice == 5)
+            if (choice == 0)
             {
                 break;
             } 
             else if (choice == 1) // ADD
             {
-                
-
                 Item.AddItem(itemList, new Item
                 {
                     // STT = 1,
@@ -129,7 +133,6 @@ public class Program
                     DateAdded = DateTime.Now,
                     Supplier = "ABC Electronics"
                 });
-
             }
             else if (choice == 2) // Search
             {
@@ -152,6 +155,13 @@ public class Program
 
                 };
                 Item.EditItem(itemList, "iemID", updatedItem);
+            }
+            else if (choice == 5)
+            {
+                Item.ShowItem(itemList);
+            }
+            {
+
             }
         } while (true);
     }
