@@ -4,16 +4,93 @@ using System.Diagnostics;
 using OfficeOpenXml;
 
 // EPPLUS 
+
+public class _Package
+{
+
+    static void Main()
+    {
+        string filePath = @"C:\Users\suno\OneDrive - UET\Proj\DB\ManagerDB.xlsx";
+    }
+    public static void Noti()
+    {
+        Console.WriteLine("\t\t\t----------Menu---------- ");
+        Console.WriteLine("0. Exit \n1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5.Show Item");
+
+    }
+
+    public static void ImportDt(string filePath)
+    {
+        try
+        {
+            if (File.Exists(filePath))
+            {
+                using (var pkg = new ExcelPackage(new FileInfo(filePath)))
+                {
+                    ExcelWorksheet ws = pkg.Workbook.Worksheets["Persons"];
+
+                    int rowCount = ws.Dimension.Rows;
+                    int columnCount = ws.Dimension.Columns;
+
+                    for (int row = 1;  row <= rowCount; row++) 
+                    {
+                        for (int col  = 1; col <= columnCount; col++)
+                        {
+                            Console.WriteLine($"{ws.Cells[row, col].Text}\t");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Error Code/File Not Found!");
+            }
+        }
+
+        catch (Exception ex) 
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    public static void ExportDt(string filePath, List<Item> LstItem)
+    {
+        try
+        {
+            using (var pkg = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var ws = pkg.Workbook.Worksheets["Persons"];
+
+                int indexRow = ws.Dimension.Rows; // Checking line in Excel
+
+                indexRow += 1; // Tránh bị đè DL trong Excel 
+
+                // Col: A > B > C > D > E > F > G 
+                // Col: 1 > 2 > 3 > 4 > 5 > 6 > 7
+
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}
+
 public class Item
 {
     public int STT { get; set; }
-    public string ItemID { get; set; } // Mã định danh duy nhất cho mỗi mặt hàng (kiểu string).
-    public string ItemName { get; set; } // Tên của mặt hàng (kiểu chuỗi).
-    public string Description { get; set; } // Mô tả chi tiết về mặt hàng (kiểu chuỗi hoặc văn bản).
-    public decimal Price { get; set; } // Giá của mặt hàng (kiểu số thập phân).
+    public string? ItemID { get; set; } // Mã định danh duy nhất cho mỗi mặt hàng (kiểu string).
+    public string? ItemName { get; set; } // Tên của mặt hàng (kiểu chuỗi).
+    public string? Description { get; set; } // Mô tả chi tiết về mặt hàng (kiểu chuỗi hoặc văn bản).
+    public decimal? Price { get; set; } // Giá của mặt hàng (kiểu số thập phân).
     public int Quantity { get; set; } // Số lượng hiện có trong kho (kiểu số nguyên).
     public DateTime DateAdded { get; set; } // Ngày mặt hàng được thêm vào kho (kiểu ngày tháng).
-    public string Supplier { get; set; } // Thông tin về nhà cung cấp của mặt hàng (kiểu chuỗi).
+    public string? Supplier { get; set; } // Thông tin về nhà cung cấp của mặt hàng (kiểu chuỗi).
 
 
     public static void AddItem(List<Item> itemList, Item newItem)
@@ -23,12 +100,9 @@ public class Item
         Console.WriteLine($"Item '{newItem.ItemName}' added!");
     }
 
-
     public static void EditItem(List<Item> itemList, string itemId, Item updatedItem)
     {
         // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
-
-        // Console.WriteLine("Updating");
 
         Item findItemEdit = itemList.FirstOrDefault(item => itemId == item.ItemID);
 
@@ -57,7 +131,6 @@ public class Item
         {
             itemList.Remove(intemToRemove);
             Console.WriteLine($"Item with ID {itemId} was del");
-
         }
         else
         {
@@ -71,26 +144,63 @@ public class Item
 
         if (foundItem != null)
         {
+            Console.WriteLine("Item found! \t");
             Console.WriteLine(foundItem.ItemID);
-            Console.WriteLine("more..."); //More ...
-
-        } 
+            Console.WriteLine(foundItem.ItemName);
+            Console.WriteLine(foundItem.Description);
+            Console.WriteLine(foundItem.Price);
+            Console.WriteLine(foundItem.Quantity);
+            Console.WriteLine(foundItem.DateAdded);
+            Console.WriteLine(foundItem.Supplier);
+            Console.Write("\t");
+        }
         else
         {
             Console.WriteLine("Item not found!");
         }
-        
+
     }
 
-    public static void ShowItem(List<Item> itemList)
+    public static void ShowItem(List<Item> itemList) // Upate to Export file excel
     {
         foreach (Item item in itemList)
         {
             // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
-            Console.WriteLine($" {item.ItemID} {item.ItemName}");
+            Console.WriteLine($"> {item.ItemID} {item.ItemName} {item.Description} {item.Price} {item.Quantity} {item.DateAdded} {item.Supplier}");
         }
     }
+
+    // 
+    public static Item InputItem()
+    {
+
+        Console.Write("ItemID: ");
+        string? _itemID = Console.ReadLine();
+        Console.Write("ItemName: ");
+        string? _itemName = Console.ReadLine();
+        Console.Write("Description: ");
+        string? _description = Console.ReadLine();
+        Console.Write("Price: ");
+        decimal? _price = decimal.Parse(Console.ReadLine());
+        Console.Write("Quantity: ");
+        int _quantity = int.Parse(Console.ReadLine());
+        DateTime _DateAdded = DateTime.Now;
+        Console.Write("Supplier: ");
+        string? _supplier = Console.ReadLine();
+
+        return new Item
+        {
+            ItemID = _itemID,
+            ItemName = _itemName,
+            Description = _description,
+            Price = _price,
+            Quantity = _quantity,
+            DateAdded = _DateAdded,
+            Supplier = _supplier
+        };
+    }
 }
+
 
 public class Program
 {
@@ -102,108 +212,55 @@ public class Program
 
         do
         {
-            Console.WriteLine("0. Exit \n1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5.Show ");
-
+            _Package.Noti();
+            Console.Write(" >  ");
             do
             {
-                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= 5)
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= 5) // Check input (Choice) in range 0, 5
                 {
                     break;
-                } 
+                }
                 else
                 {
-                    Console.WriteLine("ReChoice!");
+                    _Package.Noti();
+                    Console.Write("Please enter a number between 0 and 5: ");
                 }
             } while (true);
 
             if (choice == 0)
             {
                 break;
-            } 
+            }
             else if (choice == 1) // ADD
             {
-                Item.AddItem(itemList, new Item
-                {
-                    // STT = 1,
-                    ItemID = "01005",
-                    ItemName = "Laptop",
-                    Description = "Powerful laptop",
-                    Price = 1200.50m,
-                    Quantity = 10,
-                    DateAdded = DateTime.Now,
-                    Supplier = "ABC Electronics"
-                });
+                Item.AddItem(itemList, Item.InputItem());
             }
             else if (choice == 2) // Search
             {
-                Item.SearchItem(itemList, "itemName");
+                Console.Write("ItemName Search: ");
+                string? SearchitemName = Console.ReadLine();
+                Item.SearchItem(itemList, SearchitemName);
             }
             else if (choice == 3) // Remove
             {
-                Item.RemoveItem(itemList, "ItemID");
+                Console.Write("ItemID Remove: ");
+                string? RemoveItemID = Console.ReadLine();
+                Item.RemoveItem(itemList, RemoveItemID);
             }
             else if (choice == 4) // Edit
             {
-                Item updatedItem = new Item
-                {
-                    ItemName = "",
-                    Description = "",
-                    Price = 0.1m,
-                    Quantity = 10,
-                    DateAdded = DateTime.Now,
-                    Supplier = ""
-
-                };
-                Item.EditItem(itemList, "iemID", updatedItem);
+                Item updatedItem = Item.InputItem();
+                Item.EditItem(itemList, updatedItem.ItemID, updatedItem);
             }
             else if (choice == 5)
             {
                 Item.ShowItem(itemList);
             }
+
+            else if (choice == 5)
             {
 
             }
         } while (true);
     }
 }
-
-
-/*class Program
-{
-    static void Main()
-    {
-        List<Item> itemList = new List<Item>();
-
-        Item.AddItem(itemList, new Item
-        {
-            // STT = 1,
-            ItemID = "01005",
-            ItemName = "Laptop",
-            Description = "Powerful laptop",
-            Price = 1200.50m,
-            Quantity = 10,
-            DateAdded = DateTime.Now,
-            Supplier = "ABC Electronics"
-        });
-
-
-        // Retrun Result Search Item
-        Item.SearchItem(itemList, "iTemName");
-
-        Item.RemoveItem(itemList, "itemID");
-
-
-        // ItemName, Description, Price, Quantity, DateAdded, Supplier
-        Item updatedItem = new Item
-        {
-            ItemName = "",
-            Description = "",
-            Price = 0.1m,
-            Quantity = 10,
-            DateAdded = DateTime.Now,
-            Supplier = ""
-
-        };
-        Item.EditItem(itemList, "itemID", updatedItem);
-    }
-}*/
