@@ -8,14 +8,10 @@ using OfficeOpenXml;
 public class _Package
 {
 
-    static void Main()
-    {
-        string filePath = @"C:\Users\suno\OneDrive - UET\Proj\DB\ManagerDB.xlsx";
-    }
     public static void Noti()
     {
         Console.WriteLine("\t\t\t----------Menu---------- ");
-        Console.WriteLine("0. Exit \n1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5.Show Item");
+        Console.WriteLine("0. Exit \n1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5. Show Item\n6. Export\n7. Import");
 
     }
 
@@ -67,10 +63,20 @@ public class _Package
 
                 indexRow += 1; // Tránh bị đè DL trong Excel 
 
-                // Col: A > B > C > D > E > F > G 
-                // Col: 1 > 2 > 3 > 4 > 5 > 6 > 7
+                foreach (Item item in LstItem)
+                {
+                    Console.WriteLine("Adding....");
+                    ws.Cells[indexRow, 1].Value = item.ItemID;
+                    ws.Cells[indexRow, 2].Value = item.ItemName;
+                    ws.Cells[indexRow, 3].Value = item.Description;
+                    ws.Cells[indexRow, 4].Value = item.Price;
+                    ws.Cells[indexRow, 5].Value = item.Quantity;
+                    ws.Cells[indexRow, 6].Value = item.DateAdded;
+                    ws.Cells[indexRow, 7].Value = item.Supplier;
 
-
+                    indexRow++;
+                    pkg.Save();
+                }
             }
 
         }
@@ -208,6 +214,7 @@ public class Program
     {
         // Add, Search, Del, Edit, Exit
         List<Item> itemList = new List<Item>();
+        string filePath = @"C:\Users\suno\OneDrive - UET\Proj\DB\ManagerDB.xlsx";
         int choice;
 
         do
@@ -216,7 +223,7 @@ public class Program
             Console.Write(" >  ");
             do
             {
-                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= 5) // Check input (Choice) in range 0, 5
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= 7) // Check input (Choice) in range 0, 5
                 {
                     break;
                 }
@@ -257,9 +264,16 @@ public class Program
                 Item.ShowItem(itemList);
             }
 
-            else if (choice == 5)
+            else if (choice == 6) //Export
             {
-
+                Console.WriteLine("Export data");
+                _Package.ExportDt(filePath, itemList);
+                break;
+            }
+            else if (choice == 7) //Import
+            {
+                _Package.ImportDt(filePath);
+                break;
             }
         } while (true);
     }
