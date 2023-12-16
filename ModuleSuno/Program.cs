@@ -28,7 +28,9 @@ public class _Package
                     //Start with row 2 to skip the header
                     for (int row = 2; row <= rowCount; row++)
                     {
-                        
+                        double _DateAdded = double.Parse(ws.Cells[row, 6].Text);
+                        DateTime DateAdd = DateTime.FromOADate(_DateAdded);
+
                         // Console.WriteLine($"{ws.Cells[row, col].Text}\t");
                         // ADD Item into List
                         Item ToImportItem = new Item
@@ -39,12 +41,12 @@ public class _Package
                             Description = ws.Cells[row, 3].Text,
                             Price = decimal.Parse(ws.Cells[row, 4].Text),
                             Quantity = int.Parse(ws.Cells[row, 5].Text),
-                            DateAdded = DateTime.Parse(ws.Cells[row, 6].Text),
+                            DateAdded = DateAdd,
                             Supplier = ws.Cells[row, 7].Text
 
                         };
 
-                        System.Console.WriteLine($"{ToImportItem.ItemID} {ToImportItem.ItemName} {ToImportItem.Description} {ToImportItem.Price} {ToImportItem.Quantity} {ToImportItem.DateAdded} {ToImportItem.Supplier}");
+                        // System.Console.WriteLine($"{ToImportItem.ItemID} {ToImportItem.ItemName} {ToImportItem.Description} {ToImportItem.Price} {ToImportItem.Quantity} {ToImportItem.DateAdded} {ToImportItem.Supplier}");
                         Item.AddItem(itemList, ToImportItem);
                         System.Console.WriteLine("Importing...");
 
