@@ -1,6 +1,4 @@
 ﻿
-using System.ComponentModel;
-using System.Diagnostics;
 using OfficeOpenXml;
 
 // EPPLUS 
@@ -11,31 +9,48 @@ public class _Package
     public static void Noti()
     {
         Console.WriteLine("\t\t\t----------Menu---------- ");
-        Console.WriteLine("0. Exit \n1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5. Show Item\n6. Export\n7. Import");
+        Console.WriteLine("0. Exit \n1. ADD Item \n2. Search Item \n3. RemoveItem \n4. Edit Item \n5. Show Item\n6. Export\n");
 
     }
 
-    public static void ImportDt(string filePath)
+    public static void ImportDt(List<Item> itemList, string filePath)
     {
         try
         {
-            if (File.Exists(filePath))
+            if (File.Exists(filePath)) // Check file exist
             {
                 using (var pkg = new ExcelPackage(new FileInfo(filePath)))
                 {
                     ExcelWorksheet ws = pkg.Workbook.Worksheets["Persons"];
 
                     int rowCount = ws.Dimension.Rows;
-                    int columnCount = ws.Dimension.Columns;
 
-                    for (int row = 1;  row <= rowCount; row++) 
+                    //Start with row 2 to skip the header
+                    for (int row = 2; row <= rowCount; row++)
                     {
-                        for (int col  = 1; col <= columnCount; col++)
+                        
+                        // Console.WriteLine($"{ws.Cells[row, col].Text}\t");
+                        // ADD Item into List
+                        Item ToImportItem = new Item
                         {
-                            Console.WriteLine($"{ws.Cells[row, col].Text}\t");
-                        }
-                        Console.WriteLine();
+
+                            ItemID = ws.Cells[row, 1].Text,
+                            ItemName = ws.Cells[row, 2].Text,
+                            Description = ws.Cells[row, 3].Text,
+                            Price = decimal.Parse(ws.Cells[row, 4].Text),
+                            Quantity = int.Parse(ws.Cells[row, 5].Text),
+                            DateAdded = DateTime.Parse(ws.Cells[row, 6].Text),
+                            Supplier = ws.Cells[row, 7].Text
+
+                        };
+
+                        System.Console.WriteLine($"{ToImportItem.ItemID} {ToImportItem.ItemName} {ToImportItem.Description} {ToImportItem.Price} {ToImportItem.Quantity} {ToImportItem.DateAdded} {ToImportItem.Supplier}");
+                        Item.AddItem(itemList, ToImportItem);
+                        System.Console.WriteLine("Importing...");
+
+
                     }
+                    Console.WriteLine("Success Import Excel File!");
                 }
 
             }
@@ -45,7 +60,7 @@ public class _Package
             }
         }
 
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
@@ -217,20 +232,24 @@ public class Program
         string filePath = @"C:\Users\suno\OneDrive - UET\Proj\DB\ManagerDB.xlsx";
         int choice;
 
+        // Auto Import Data from Excel
+
+        _Package.ImportDt(itemList, filePath);
+
         do
         {
             _Package.Noti();
             Console.Write(" >  ");
             do
             {
-                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= 7) // Check input (Choice) in range 0, 5
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= 6) // Check input (Choice) in range 0, 5
                 {
                     break;
                 }
                 else
                 {
                     _Package.Noti();
-                    Console.Write("Please enter a number between 0 and 5: ");
+                    Console.Write("Please enter a number between 0 and 6: ");
                 }
             } while (true);
 
@@ -270,11 +289,11 @@ public class Program
                 _Package.ExportDt(filePath, itemList);
                 break;
             }
-            else if (choice == 7) //Import
-            {
-                _Package.ImportDt(filePath);
-                break;
-            }
+            // else if (choice == 7) //Import
+            // {
+            //     _Package.ImportDt(filePath);
+            // }
         } while (true);
     }
 }
+
