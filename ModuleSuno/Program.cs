@@ -47,7 +47,7 @@ public class _Package
                         };
 
                         // System.Console.WriteLine($"{ToImportItem.ItemID} {ToImportItem.ItemName} {ToImportItem.Description} {ToImportItem.Price} {ToImportItem.Quantity} {ToImportItem.DateAdded} {ToImportItem.Supplier}");
-                        Item.AddItem(itemList, ToImportItem);
+                        _Operator.AddItem(itemList, ToImportItem);
                         System.Console.WriteLine("Importing...");
 
 
@@ -115,7 +115,10 @@ public class Item
     public DateTime DateAdded { get; set; } // Ngày mặt hàng được thêm vào kho (kiểu ngày tháng).
     public string? Supplier { get; set; } // Thông tin về nhà cung cấp của mặt hàng (kiểu chuỗi).
 
+}
 
+public class _Operator
+{
     public static void AddItem(List<Item> itemList, Item newItem)
     {
         newItem.STT = itemList.Count + 1;
@@ -222,8 +225,8 @@ public class Item
             Supplier = _supplier
         };
     }
-}
 
+}
 
 public class Program
 {
@@ -261,28 +264,28 @@ public class Program
             }
             else if (choice == 1) // ADD
             {
-                Item.AddItem(itemList, Item.InputItem());
+                _Operator.AddItem(itemList, _Operator.InputItem());
             }
             else if (choice == 2) // Search
             {
                 Console.Write("ItemName Search: ");
                 string? SearchitemName = Console.ReadLine();
-                Item.SearchItem(itemList, SearchitemName);
+                _Operator.SearchItem(itemList, SearchitemName);
             }
             else if (choice == 3) // Remove
             {
                 Console.Write("ItemID Remove: ");
                 string? RemoveItemID = Console.ReadLine();
-                Item.RemoveItem(itemList, RemoveItemID);
+                _Operator.RemoveItem(itemList, RemoveItemID);
             }
             else if (choice == 4) // Edit
             {
-                Item updatedItem = Item.InputItem();
-                Item.EditItem(itemList, updatedItem.ItemID, updatedItem);
+                Item updatedItem = _Operator.InputItem();
+                _Operator.EditItem(itemList, updatedItem.ItemID, updatedItem);
             }
             else if (choice == 5)
             {
-                Item.ShowItem(itemList);
+                _Operator.ShowItem(itemList);
             }
 
             else if (choice == 6) //Export
