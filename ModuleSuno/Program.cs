@@ -1,7 +1,130 @@
 ﻿
-using OfficeOpenXml;
+using OfficeOpenXml; // EPPLUS 
 
-// EPPLUS 
+
+
+public class Item
+{
+    public int STT { get; set; }
+    public string? ItemID { get; set; } // Mã định danh duy nhất cho mỗi mặt hàng (kiểu string).
+    public string? ItemName { get; set; } // Tên của mặt hàng (kiểu chuỗi).
+    public string? Description { get; set; } // Mô tả chi tiết về mặt hàng (kiểu chuỗi hoặc văn bản).
+    public decimal? Price { get; set; } // Giá của mặt hàng (kiểu số thập phân).
+    public int Quantity { get; set; } // Số lượng hiện có trong kho (kiểu số nguyên).
+    public DateTime DateAdded { get; set; } // Ngày mặt hàng được thêm vào kho (kiểu ngày tháng).
+    public string? Supplier { get; set; } // Thông tin về nhà cung cấp của mặt hàng (kiểu chuỗi).
+}
+
+public class _Operator
+{
+    public static void AddItem(List<Item> itemList, Item newItem)
+    {
+        newItem.STT = itemList.Count + 1;
+        itemList.Add(newItem);
+        Console.WriteLine($"Item '{newItem.ItemName}' added!");
+    }
+
+    public static void EditItem(List<Item> itemList, string itemId, Item updatedItem)
+    {
+        // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
+
+        Item findItemEdit = itemList.FirstOrDefault(item => itemId == item.ItemID);
+
+        if (findItemEdit != null)
+        {
+            findItemEdit.ItemName = updatedItem.ItemName;
+            findItemEdit.Description = updatedItem.Description;
+            findItemEdit.Price = updatedItem.Price;
+            findItemEdit.Quantity = updatedItem.Quantity;
+            findItemEdit.DateAdded = updatedItem.DateAdded;
+            findItemEdit.Supplier = updatedItem.Supplier;
+
+            Console.WriteLine($"ID Item: {itemId} was edited!");
+        }
+        else
+        {
+            Console.WriteLine($"ItemID: {itemId} not found!");
+        }
+    }
+
+    public static void RemoveItem(List<Item> itemList, string itemId)
+    {
+        Item intemToRemove = itemList.FirstOrDefault(item => item.ItemID == itemId);
+
+        if (intemToRemove != null)
+        {
+            itemList.Remove(intemToRemove);
+            Console.WriteLine($"Item with ID {itemId} was del");
+        }
+        else
+        {
+            Console.WriteLine($"Item ID not found");
+        }
+    }
+
+    public static void SearchItem(List<Item> itemList, string itemName)
+    {
+        Item foundItem = itemList.FirstOrDefault(item => item.ItemName == itemName);
+
+        if (foundItem != null)
+        {
+            Console.WriteLine("Item found! \t");
+            Console.WriteLine(foundItem.ItemID);
+            Console.WriteLine(foundItem.ItemName);
+            Console.WriteLine(foundItem.Description);
+            Console.WriteLine(foundItem.Price);
+            Console.WriteLine(foundItem.Quantity);
+            Console.WriteLine(foundItem.DateAdded);
+            Console.WriteLine(foundItem.Supplier);
+            Console.Write("\t");
+        }
+        else
+        {
+            Console.WriteLine("Item not found!");
+        }
+
+    }
+
+    public static void ShowItem(List<Item> itemList) // Upate to Export file excel
+    {
+        foreach (Item item in itemList)
+        {
+            // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
+            Console.WriteLine($"> {item.STT} {item.ItemID} {item.ItemName} {item.Description} {item.Price} {item.Quantity} {item.DateAdded} {item.Supplier}");
+        }
+    }
+
+    // 
+    public static Item InputItem()
+    {
+
+        Console.Write("ItemID: ");
+        string? _itemID = Console.ReadLine();
+        Console.Write("ItemName: ");
+        string? _itemName = Console.ReadLine();
+        Console.Write("Description: ");
+        string? _description = Console.ReadLine();
+        Console.Write("Price: ");
+        decimal? _price = decimal.Parse(Console.ReadLine());
+        Console.Write("Quantity: ");
+        int _quantity = int.Parse(Console.ReadLine());
+        DateTime _DateAdded = DateTime.Now;
+        Console.Write("Supplier: ");
+        string? _supplier = Console.ReadLine();
+
+        return new Item
+        {
+            ItemID = _itemID,
+            ItemName = _itemName,
+            Description = _description,
+            Price = _price,
+            Quantity = _quantity,
+            DateAdded = _DateAdded,
+            Supplier = _supplier
+        };
+    }
+
+}
 
 public class _Package
 {
@@ -104,129 +227,7 @@ public class _Package
     }
 }
 
-public class Item
-{
-    public int STT { get; set; }
-    public string? ItemID { get; set; } // Mã định danh duy nhất cho mỗi mặt hàng (kiểu string).
-    public string? ItemName { get; set; } // Tên của mặt hàng (kiểu chuỗi).
-    public string? Description { get; set; } // Mô tả chi tiết về mặt hàng (kiểu chuỗi hoặc văn bản).
-    public decimal? Price { get; set; } // Giá của mặt hàng (kiểu số thập phân).
-    public int Quantity { get; set; } // Số lượng hiện có trong kho (kiểu số nguyên).
-    public DateTime DateAdded { get; set; } // Ngày mặt hàng được thêm vào kho (kiểu ngày tháng).
-    public string? Supplier { get; set; } // Thông tin về nhà cung cấp của mặt hàng (kiểu chuỗi).
 
-}
-
-public class _Operator
-{
-    public static void AddItem(List<Item> itemList, Item newItem)
-    {
-        newItem.STT = itemList.Count + 1;
-        itemList.Add(newItem);
-        Console.WriteLine($"Item '{newItem.ItemName}' added!");
-    }
-
-    public static void EditItem(List<Item> itemList, string itemId, Item updatedItem)
-    {
-        // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
-
-        Item findItemEdit = itemList.FirstOrDefault(item => itemId == item.ItemID);
-
-        if (findItemEdit != null)
-        {
-            findItemEdit.ItemName = updatedItem.ItemName;
-            findItemEdit.Description = updatedItem.Description;
-            findItemEdit.Price = updatedItem.Price;
-            findItemEdit.Quantity = updatedItem.Quantity;
-            findItemEdit.DateAdded = updatedItem.DateAdded;
-            findItemEdit.Supplier = updatedItem.Supplier;
-
-            Console.WriteLine($"ID Item: {itemId} was edited!");
-        }
-        else
-        {
-            Console.WriteLine($"ItemID: {itemId} not found!");
-        }
-    }
-
-    public static void RemoveItem(List<Item> itemList, string itemId)
-    {
-        Item intemToRemove = itemList.FirstOrDefault(item => item.ItemID == itemId);
-
-        if (intemToRemove != null)
-        {
-            itemList.Remove(intemToRemove);
-            Console.WriteLine($"Item with ID {itemId} was del");
-        }
-        else
-        {
-            Console.WriteLine($"Item ID not found");
-        }
-    }
-
-    public static void SearchItem(List<Item> itemList, string itemName)
-    {
-        Item foundItem = itemList.FirstOrDefault(item => item.ItemName == itemName);
-
-        if (foundItem != null)
-        {
-            Console.WriteLine("Item found! \t");
-            Console.WriteLine(foundItem.ItemID);
-            Console.WriteLine(foundItem.ItemName);
-            Console.WriteLine(foundItem.Description);
-            Console.WriteLine(foundItem.Price);
-            Console.WriteLine(foundItem.Quantity);
-            Console.WriteLine(foundItem.DateAdded);
-            Console.WriteLine(foundItem.Supplier);
-            Console.Write("\t");
-        }
-        else
-        {
-            Console.WriteLine("Item not found!");
-        }
-
-    }
-
-    public static void ShowItem(List<Item> itemList) // Upate to Export file excel
-    {
-        foreach (Item item in itemList)
-        {
-            // ItemID, ItemName, Description, Price, Quantity, DateAdded, Supplier
-            Console.WriteLine($"> {item.ItemID} {item.ItemName} {item.Description} {item.Price} {item.Quantity} {item.DateAdded} {item.Supplier}");
-        }
-    }
-
-    // 
-    public static Item InputItem()
-    {
-
-        Console.Write("ItemID: ");
-        string? _itemID = Console.ReadLine();
-        Console.Write("ItemName: ");
-        string? _itemName = Console.ReadLine();
-        Console.Write("Description: ");
-        string? _description = Console.ReadLine();
-        Console.Write("Price: ");
-        decimal? _price = decimal.Parse(Console.ReadLine());
-        Console.Write("Quantity: ");
-        int _quantity = int.Parse(Console.ReadLine());
-        DateTime _DateAdded = DateTime.Now;
-        Console.Write("Supplier: ");
-        string? _supplier = Console.ReadLine();
-
-        return new Item
-        {
-            ItemID = _itemID,
-            ItemName = _itemName,
-            Description = _description,
-            Price = _price,
-            Quantity = _quantity,
-            DateAdded = _DateAdded,
-            Supplier = _supplier
-        };
-    }
-
-}
 
 public class Program
 {
@@ -240,6 +241,9 @@ public class Program
         // Auto Import Data from Excel
 
         _Package.ImportDt(itemList, filePath);
+        // show STT
+
+        
 
         do
         {
